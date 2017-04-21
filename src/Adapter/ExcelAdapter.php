@@ -69,6 +69,9 @@ class ExcelAdapter
         $row = [];
         foreach ($headers as $index => $name) {
             $row[$name] = isset($sourceRow[$index]) ? $sourceRow[$index] : null;
+            if (is_string($row[$name])) {
+                $row[$name] = trim($row[$name]);
+            }
         }
 
         return $row;
