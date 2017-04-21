@@ -31,6 +31,7 @@ class ExcelAdapter
         $startAt = isset($configuration['startAt']) ? $configuration['startAt'] : 1;
 
         $rows = [];
+        $this->repeatingColumns = isset($configuration['repeatingColumns']) ? array_flip($configuration['repeatingColumns']) : [];
         foreach ($reader->getSheetIterator() as $sheet) {
             foreach ($sheet->getRowIterator() as $index => $row) {
                 if ($index == $headerAt) {
@@ -44,6 +45,13 @@ class ExcelAdapter
                 }
                 if ($headers !== null) {
                     $row = $this->mapHeaders($row, $headers);
+                }
+                foreach ($this->repeatingColumns as $repeatingColumn => $value) {
+                    if (empty($row[$repeatingColumn])) {
+                        $row[$repeatingColumn] = $value;
+                    } else {
+                        $this->repeatingColumns[$repeatingColumn] = $row[$repeatingColumn];
+                    }
                 }
                 $rows[] = $row;
             }
