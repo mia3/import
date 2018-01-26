@@ -53,12 +53,19 @@ class ExcelAdapter
                         $this->repeatingColumns[$repeatingColumn] = $row[$repeatingColumn];
                     }
                 }
-                $rows[] = $row;
+                if (isset($configuration['idColumn'])) {
+                    $rows[$row[$configuration['idColumn']]] = $row;
+                } else {
+                    $rows[] = $row;
+                }
             }
         }
 
         if (isset($configuration['filter'])) {
-            $rows = array_values(array_filter($rows, $configuration['filter']));
+            $rows = array_filter($rows, $configuration['filter']);
+            if (!isset($configuration['idColumn'])) {
+                $rows = array_values($rows);
+            }
         }
 
         return $rows;
